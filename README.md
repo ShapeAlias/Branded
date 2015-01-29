@@ -5,10 +5,10 @@ EDCC CS161 Group Project, Visual Novel "Branded"
 
 Important Links:
 
-// UML Class diagram   
+// Code Flow Chart  
 https://drive.google.com/a/edmail.edcc.edu/file/d/0B_nh_nvl2Q8fSlU3VTBUb0tTRk0/view?usp=sharing   
 
-// Code Flow Chart    
+// UML Class diagram   
 https://drive.google.com/a/edmail.edcc.edu/file/d/0B_nh_nvl2Q8fTk1mTGNDX0QzbFU/view?usp=sharing 
 
 //Game Ideas   
