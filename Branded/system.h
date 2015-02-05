@@ -6,6 +6,7 @@
 #include <string>
 #include <ObjIdl.h>
 #include <gdiplus.h>
+#include "Button.h"
 #pragma comment (lib,"Gdiplus.lib")
 using namespace Gdiplus;
 using namespace std;
@@ -34,6 +35,8 @@ private:
 	bool m_done;
 	Input* m_input;
 	ULONG_PTR gdiPlusToken;
+	Button* m_button;
+	int m_FPS;
 	
 
 private:

@@ -16,10 +16,11 @@ bool System::init()
 
 	GdiplusStartup(&gdiPlusToken, &gdiplusStartupInput, NULL);
 
-	initWindows(screenWidth, screenHeight, true);
-
+	initWindows(screenWidth, screenHeight, false);
 	m_input->init();
-
+	//init button
+	m_button = new Button(32, 32, 100, 24, Color(255, 255, 0, 0), Color(255, 0, 255, 0), L"Click me",24);
+	m_FPS = 60;
 	return true;
 
 }
@@ -34,26 +35,30 @@ void System::run()
 {
 	MSG msg;
 	bool  result;
-
 	ZeroMemory(&msg, sizeof(MSG));
+	unsigned long startTime = GetTickCount();
 	while (!m_done)
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (GetTickCount()-startTime >  (1000/m_FPS))
 		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+			startTime = GetTickCount();
+			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
 
-		if (msg.message == WM_QUIT)
-		{
-			m_done = true;
-		}
-		else
-		{
-			result = frame();
-			if (!result)
+			if (msg.message == WM_QUIT)
 			{
 				m_done = true;
+			}
+			else
+			{
+				result = frame();
+				if (!result)
+				{
+					m_done = true;
+				}
 			}
 		}
 	}
@@ -62,14 +67,22 @@ void System::run()
 
 bool System::frame()
 {
+	m_button->Update(*m_input);
 	if (m_input->isKeyDown(VK_ESCAPE)) m_done = true;
-	if (m_input->isMouseLeftClicked())
+	/*if (m_input->isMouseLeftClicked())
 	{
 		string message = "Clicked at (" + to_string(m_input->getMouseX()) + "," +
 			to_string(m_input->getMouseY()) + ")";
 		wstring wMessage = wstring(message.begin(), message.end());
 		LPCWSTR actualMessage = wMessage.c_str();
 		MessageBox(m_hwnd, actualMessage, L"Message:Clicked", MB_OK);
+		m_input->mouseLClick(false);
+	}*/
+	//Redraw the window
+	RedrawWindow(m_hwnd, NULL, NULL, RDW_INVALIDATE);
+	if (m_button->isClicked())
+	{
+		MessageBox(m_hwnd, L"Click the button", L"Click", MB_OK);
 		m_input->mouseLClick(false);
 	}
 	return true;
@@ -112,6 +125,15 @@ LRESULT CALLBACK System::messageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPA
 	case WM_RBUTTONUP:
 	{
 		m_input->mouseRClcik(false);
+		return 0;
+	}
+	case WM_SYNCPAINT:
+	{
+		HDC hdc;
+		PAINTSTRUCT ps;
+		hdc = BeginPaint(hwnd, &ps);
+		ApplicationHandle->draw(hdc);
+		EndPaint(hwnd, &ps);
 		return 0;
 	}
 	default:
@@ -255,12 +277,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 
 VOID System::draw(HDC hdc)
 {
-	Graphics g(hdc);
-
-	SolidBrush brush(Color(255, 0, 0, 255));
-	FontFamily fontFamily(L"Times New Roman");
-	Font font(&fontFamily, 24, FontStyleRegular, UnitPixel);
-	PointF pointF(10.0f, 20.0f);
-
-	g.DrawString(L"Hello World!", -1, &font, pointF, &brush);
+	//draw button
+	m_button->draw(hdc);
+;
 }
