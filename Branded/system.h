@@ -4,6 +4,10 @@
 #include <Windows.h>
 #include "input.h"
 #include <string>
+#include <ObjIdl.h>
+#include <gdiplus.h>
+#pragma comment (lib,"Gdiplus.lib")
+using namespace Gdiplus;
 using namespace std;
 class System
 {
@@ -14,14 +18,14 @@ public:
 	bool init();
 	void shutDown();
 	void run();
-
+    VOID draw(HDC);
 	LRESULT CALLBACK messageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
 	bool frame();
 	void initWindows(int&, int&, bool);
-	void shutDownWindows();
 	
+	void shutDownWindows();
 private:
 	LPCWSTR m_applicationName;
 	HINSTANCE m_hinstance;
@@ -29,11 +33,15 @@ private:
 	bool m_fullScreen;
 	bool m_done;
 	Input* m_input;
+	ULONG_PTR gdiPlusToken;
+	
 
 private:
 
 };
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+VOID OnPaint(HDC hdc);
 
 static System* ApplicationHandle = 0;

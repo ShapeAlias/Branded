@@ -12,7 +12,9 @@ bool System::init()
 	bool result;
 	m_done = false;
 	m_input = new Input;
+	GdiplusStartupInput gdiplusStartupInput;
 
+	GdiplusStartup(&gdiPlusToken, &gdiplusStartupInput, NULL);
 
 	initWindows(screenWidth, screenHeight, true);
 
@@ -25,6 +27,7 @@ bool System::init()
 void System::shutDown()
 {
 	shutDownWindows();
+	GdiplusShutdown(gdiPlusToken);
 }
 
 void System::run()
@@ -232,10 +235,32 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 	}
+	case WM_PAINT:
+	{
+		HDC hdc;
+		PAINTSTRUCT ps;
+		hdc = BeginPaint(hwnd, &ps);
+		ApplicationHandle->draw(hdc);
+		EndPaint(hwnd, &ps);
+		return 0;
+	}
+
 
 	default:
 	{
 		return ApplicationHandle->messageHandler(hwnd, umessage, wparam, lparam);
 	}
 	}
+}
+
+VOID System::draw(HDC hdc)
+{
+	Graphics g(hdc);
+
+	SolidBrush brush(Color(255, 0, 0, 255));
+	FontFamily fontFamily(L"Times New Roman");
+	Font font(&fontFamily, 24, FontStyleRegular, UnitPixel);
+	PointF pointF(10.0f, 20.0f);
+
+	g.DrawString(L"Hello World!", -1, &font, pointF, &brush);
 }
