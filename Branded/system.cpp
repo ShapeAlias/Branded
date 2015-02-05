@@ -1,4 +1,5 @@
 #include "system.h"
+
 System::System()
 {}
 
@@ -13,7 +14,7 @@ bool System::init()
 	m_input = new Input;
 
 
-	initWindows(screenWidth, screenHeight, false);
+	initWindows(screenWidth, screenHeight, true);
 
 	m_input->init();
 
@@ -59,6 +60,15 @@ void System::run()
 bool System::frame()
 {
 	if (m_input->isKeyDown(VK_ESCAPE)) m_done = true;
+	if (m_input->isMouseLeftClicked())
+	{
+		string message = "Clicked at (" + to_string(m_input->getMouseX()) + "," +
+			to_string(m_input->getMouseY()) + ")";
+		wstring wMessage = wstring(message.begin(), message.end());
+		LPCWSTR actualMessage = wMessage.c_str();
+		MessageBox(m_hwnd, actualMessage, L"Message:Clicked", MB_OK);
+		m_input->mouseLClick(false);
+	}
 	return true;
 }
 
@@ -74,6 +84,31 @@ LRESULT CALLBACK System::messageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPA
 	case WM_KEYUP:
 	{
 		m_input->keyUp((unsigned int)wparam);
+		return 0;
+	}
+	case WM_MOUSEMOVE:
+	{
+		m_input->mouseMove(lparam);
+		return 0;
+	}
+	case  WM_LBUTTONDOWN:
+	{
+		m_input->mouseLClick(true);
+		return 0;
+	}
+	case WM_LBUTTONUP:
+	{
+		m_input->mouseLClick(false);
+		return 0;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		m_input->mouseRClcik(true);
+		return 0;
+	}
+	case WM_RBUTTONUP:
+	{
+		m_input->mouseRClcik(false);
 		return 0;
 	}
 	default:
@@ -97,7 +132,7 @@ void System::initWindows(int& screenWidth, int& screenHeight, bool fullScreen)
 	m_hinstance = GetModuleHandle(NULL);
 
 	// Give the application a name.
-	m_applicationName = L"Engine";
+	m_applicationName = L"Branded";
 
 	// Setup the windows class with default settings.
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -159,7 +194,7 @@ void System::initWindows(int& screenWidth, int& screenHeight, bool fullScreen)
 	SetFocus(m_hwnd);
 
 	// Hide the mouse cursor.
-	ShowCursor(false);
+	ShowCursor(true);
 
 	return;
 }

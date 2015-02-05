@@ -3,6 +3,8 @@
 
 #include <Windows.h>
 #include "input.h"
+#include <string>
+using namespace std;
 class System
 {
 public:
@@ -19,6 +21,7 @@ private:
 	bool frame();
 	void initWindows(int&, int&, bool);
 	void shutDownWindows();
+	
 private:
 	LPCWSTR m_applicationName;
 	HINSTANCE m_hinstance;
