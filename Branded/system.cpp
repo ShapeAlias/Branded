@@ -15,8 +15,7 @@ bool System::init()
 
 	initWindows(screenWidth, screenHeight, false);
 
-	result = m_input->init(m_hinstance, m_hwnd, screenWidth, screenHeight);
-
+	m_input->init();
 
 	return true;
 
@@ -59,10 +58,7 @@ void System::run()
 
 bool System::frame()
 {
-	m_input->frame();
-	int mouseX, mouseY;
-	bool left, right;
-	m_input->RecordMouse(mouseX, mouseY, left, right);
+	if (m_input->isKeyDown(VK_ESCAPE)) m_done = true;
 	return true;
 }
 
@@ -72,9 +68,13 @@ LRESULT CALLBACK System::messageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPA
 	{
 	case WM_KEYDOWN:
 	{
-		if ((unsigned int)(wparam) == VK_ESCAPE) {
-			m_done = true;
-		}
+		m_input->keyDown((unsigned int)wparam);
+		return 0;
+	}
+	case WM_KEYUP:
+	{
+		m_input->keyUp((unsigned int)wparam);
+		return 0;
 	}
 	default:
 	{
