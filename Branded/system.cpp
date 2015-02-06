@@ -197,6 +197,10 @@ void System::initWindows(int& screenWidth, int& screenHeight, bool fullScreen)
 
 		// Set the position of the window to the top left corner.
 		posX = posY = 0;
+		// Create the window with the screen settings and get the handle to it.
+		m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName,
+			  WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
+			posX, posY, screenWidth, screenHeight, NULL, NULL, m_hinstance, NULL);
 	}
 	else
 	{
@@ -207,13 +211,17 @@ void System::initWindows(int& screenWidth, int& screenHeight, bool fullScreen)
 		// Place the window in the middle of the screen.
 		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
 		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
+		// Create the window with the screen settings and get the handle to it.
+		m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName,
+			WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
+			posX, posY, screenWidth, screenHeight, NULL, NULL, m_hinstance, NULL);
 	}
 
 	// Create the window with the screen settings and get the handle to it.
-	m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName,
-		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
+	/*m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName,
+		WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
 		posX, posY, screenWidth, screenHeight, NULL, NULL, m_hinstance, NULL);
-
+*/
 	// Bring the window up on the screen and set it as main focus.
 	ShowWindow(m_hwnd, SW_SHOW);
 	SetForegroundWindow(m_hwnd);
@@ -291,6 +299,6 @@ VOID System::draw(HDC hdc)
 	//draw the updated image
 	//SolidBrush brush(Color(255, 255, 255, 255));
 	Graphics graphics(hdc);
-	graphics.DrawImage(&bmp, m_posX, m_posY, m_screenWidth, m_screenHeight);
+	graphics.DrawImage(&bmp, 0, 0, m_screenWidth, m_screenHeight);
 ;
 }
