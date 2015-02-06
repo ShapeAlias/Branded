@@ -18,6 +18,7 @@ bool System::init()
 
 	initWindows(screenWidth, screenHeight, true);
 	m_input->init();
+	int blank;
 	//init button
 	m_button = new Button(32, 32, 100, 24, Color(255, 255, 0, 0), Color(255, 0, 255, 0), L"Click me",24);
 	m_FPS = 60;
