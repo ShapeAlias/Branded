@@ -11,7 +11,7 @@ public:
 
 	~Button();
 	bool isClicked();
-	VOID draw(HDC hdc);
+	VOID draw(Bitmap& bmp);
 	void Update(Input input);
 
 private:

@@ -14,31 +14,31 @@ Button::Button(int x, int y, int width, int height, Color argb1, Color argb2, LP
 	m_fontSize = fontSize;
 }
 
-VOID Button::draw(HDC hdc)
+VOID Button::draw(Bitmap& bmp)
 {
-	Graphics g(hdc);
+	Graphics* g = Graphics::FromImage(&bmp);
 	if (m_highlighted)
 	{
 		SolidBrush brush( m_color2);
-		g.FillRectangle(&brush, m_x, m_y, m_width, m_height);
+		g->FillRectangle(&brush, m_x, m_y, m_width, m_height);
 		//draw text
 		FontFamily fontFamily(L"Times New Roman");
 		SolidBrush brushf(m_color1);
 		Font font(&fontFamily, m_fontSize, FontStyleRegular, UnitPixel);
-		PointF pointf(m_x + (m_width / 2) - (font.GetHeight(&g)*sizeof(m_text) / 2), m_y );
-		g.DrawString(m_text, -1, &font, pointf, &brushf);
+		PointF pointf(m_x + (m_width / 2) - (font.GetHeight(&*g)*sizeof(m_text) / 2), m_y );
+		g->DrawString(m_text, -1, &font, pointf, &brushf);
 		
 	}
 	else
 	{
 		SolidBrush brush(m_color1);
-		g.FillRectangle(&brush, m_x, m_y, m_width, m_height);
+		g->FillRectangle(&brush, m_x, m_y, m_width, m_height);
 		//draw text
 		FontFamily fontFamily(L"Times New Roman");
 		SolidBrush brushf(m_color2);
 		Font font(&fontFamily, m_fontSize, FontStyleRegular, UnitPixel);
-		PointF pointf(m_x + (m_width / 2) - (font.GetHeight(&g)*sizeof(m_text) / 2), m_y);
-		g.DrawString(m_text, -1, &font, pointf, &brushf);
+		PointF pointf(m_x + (m_width / 2) - (font.GetHeight(&*g)*sizeof(m_text) / 2), m_y);
+		g->DrawString(m_text, -1, &font, pointf, &brushf);
 	}
 }
 

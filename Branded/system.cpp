@@ -16,7 +16,7 @@ bool System::init()
 
 	GdiplusStartup(&gdiPlusToken, &gdiplusStartupInput, NULL);
 
-	initWindows(screenWidth, screenHeight, false);
+	initWindows(screenWidth, screenHeight, true);
 	m_input->init();
 	//init button
 	m_button = new Button(32, 32, 100, 24, Color(255, 255, 0, 0), Color(255, 0, 255, 0), L"Click me",24);
@@ -127,15 +127,15 @@ LRESULT CALLBACK System::messageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPA
 		m_input->mouseRClcik(false);
 		return 0;
 	}
-	case WM_SYNCPAINT:
-	{
-		HDC hdc;
-		PAINTSTRUCT ps;
-		hdc = BeginPaint(hwnd, &ps);
-		ApplicationHandle->draw(hdc);
-		EndPaint(hwnd, &ps);
-		return 0;
-	}
+	//case WM_SYNCPAINT:
+	//{
+	//	HDC hdc;
+	//	PAINTSTRUCT ps;
+	//	hdc = BeginPaint(hwnd, &ps);
+	//	ApplicationHandle->draw(hdc);
+	//	EndPaint(hwnd, &ps);
+	//	return 0;
+	//}
 	default:
 	{
 		return DefWindowProc(hwnd, umsg, wparam, lparam);
@@ -220,6 +220,10 @@ void System::initWindows(int& screenWidth, int& screenHeight, bool fullScreen)
 
 	// Hide the mouse cursor.
 	ShowCursor(true);
+	m_screenWidth = screenWidth;
+	m_screenHeight = screenHeight;
+	m_posX = posX;
+	m_posY = posY;
 
 	return;
 }
@@ -278,6 +282,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 VOID System::draw(HDC hdc)
 {
 	//draw button
-	m_button->draw(hdc);
+	Bitmap bmp(GAME_RES_WIDTH, GAME_RES_HEIGHT);
+
+	m_button->draw(bmp);
+	Graphics* g = Graphics::FromImage(&bmp);
+
+	//draw the updated image
+	//SolidBrush brush(Color(255, 255, 255, 255));
+	Graphics graphics(hdc);
+	graphics.DrawImage(&bmp, m_posX, m_posY, m_screenWidth, m_screenHeight);
 ;
 }
